@@ -1,6 +1,6 @@
 # CLAUDE.md — katlauze personal site
 
-Personal website for Katarzyna Boddy. Built with FastAPI + Jinja2 + markdown-based blog. Terminal-themed, designed to be easy to retheme.
+Personal website for Katarzyna Lauzé. Built with FastAPI + Jinja2 + markdown-based blog. Terminal-themed, designed to be easy to retheme.
 
 ## Tech stack
 
@@ -9,7 +9,11 @@ Personal website for Katarzyna Boddy. Built with FastAPI + Jinja2 + markdown-bas
 - **Blog content:** Markdown files with YAML frontmatter (`python-frontmatter`, `markdown2`)
 - **Email:** fastapi-mail via SendGrid SMTP
 - **Containerisation:** Docker + Docker Compose
-- **Deployment:** Azure Container Apps (same pattern as sparrowrobotics)
+- **Deployment:** Azure Container Apps + AWS App Runner (parallel pipelines)
+- **CI/CD:** GitHub Actions with OIDC (no stored long-lived secrets)
+- **Infra bootstrap:** `infra/bootstrap-azure.sh` and `infra/bootstrap-aws.sh`
+- **Bootstrap prerequisites:** `azure-cli`, `awscli`, `jq`, Docker (AWS script pushes a placeholder image to ECR)
+- **GitHub secrets/variables:** Settings → Secrets and variables → Actions (Secrets tab for sensitive values, Variables tab for config)
 
 ## Project structure
 

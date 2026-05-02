@@ -25,7 +25,7 @@ echo "==> Creating ECR repository..."
 aws ecr create-repository \
   --repository-name "$ECR_REPO" \
   --region "$AWS_REGION" \
-  --output none 2>/dev/null || echo "    ECR repo already exists, skipping."
+  > /dev/null 2>/dev/null || echo "    ECR repo already exists, skipping."
 
 ECR_URI="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
 
@@ -36,11 +36,11 @@ EXISTING=$(aws iam list-open-id-connect-providers \
   --output text)
 
 if [ -z "$EXISTING" ]; then
-  aws iam create-openid-connect-provider \
+  aws iam create-open-id-connect-provider \
     --url "https://${OIDC_PROVIDER}" \
     --client-id-list "sts.amazonaws.com" \
     --thumbprint-list "6938fd4d98bab03faadb97b34396831e3780aea1" \
-    --output none
+    > /dev/null
   echo "    Created OIDC provider."
 else
   echo "    Already exists, skipping."
@@ -75,7 +75,7 @@ EOF
 aws iam create-role \
   --role-name "$GITHUB_ACTIONS_ROLE" \
   --assume-role-policy-document "$TRUST_POLICY" \
-  --output none 2>/dev/null || echo "    Role already exists, skipping."
+  > /dev/null 2>/dev/null || echo "    Role already exists, skipping."
 
 echo "==> Attaching policies to GitHub Actions role..."
 aws iam attach-role-policy \
@@ -109,7 +109,7 @@ EOF
 aws iam create-role \
   --role-name "$APPRUNNER_ECR_ROLE" \
   --assume-role-policy-document "$APPRUNNER_TRUST" \
-  --output none 2>/dev/null || echo "    Role already exists, skipping."
+  > /dev/null 2>/dev/null || echo "    Role already exists, skipping."
 
 aws iam attach-role-policy \
   --role-name "$APPRUNNER_ECR_ROLE" \
@@ -117,33 +117,46 @@ aws iam attach-role-policy \
 
 APPRUNNER_ECR_ROLE_ARN=$(aws iam get-role --role-name "$APPRUNNER_ECR_ROLE" --query Role.Arn --output text)
 
+# ── Placeholder image in ECR (App Runner requires an image to exist at creation) ─
+echo "==> Pushing placeholder image to ECR..."
+aws ecr get-login-password --region "$AWS_REGION" \
+  | docker login --username AWS --password-stdin "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+
+docker pull --platform linux/amd64 public.ecr.aws/docker/library/python:3.13-slim
+docker tag public.ecr.aws/docker/library/python:3.13-slim "${ECR_URI}:latest"
+docker push "${ECR_URI}:latest"
+
 # ── App Runner service ─────────────────────────────────────────────────────────
 echo "==> Creating App Runner service..."
-SERVICE_JSON=$(aws apprunner create-service \
-  --service-name "$APPRUNNER_SERVICE_NAME" \
-  --source-configuration "{
-    \"ImageRepository\": {
-      \"ImageIdentifier\": \"${ECR_URI}:latest\",
-      \"ImageRepositoryType\": \"ECR\",
-      \"ImageConfiguration\": {\"Port\": \"8000\"}
-    },
-    \"AuthenticationConfiguration\": {
-      \"AccessRoleArn\": \"${APPRUNNER_ECR_ROLE_ARN}\"
-    },
-    \"AutoDeploymentsEnabled\": false
-  }" \
-  --instance-configuration "{\"Cpu\": \"0.25 vCPU\", \"Memory\": \"0.5 GB\"}" \
+
+# Check if service already exists
+EXISTING_SERVICE=$(aws apprunner list-services \
   --region "$AWS_REGION" \
-  --output json 2>/dev/null || echo "{}")
+  --query "ServiceSummaryList[?ServiceName=='${APPRUNNER_SERVICE_NAME}'].ServiceArn" \
+  --output text)
 
-SERVICE_ARN=$(echo "$SERVICE_JSON" | jq -r '.Service.ServiceArn // empty')
-
-if [ -z "$SERVICE_ARN" ]; then
-  # Service may already exist — fetch ARN
-  SERVICE_ARN=$(aws apprunner list-services \
+if [ -n "$EXISTING_SERVICE" ]; then
+  echo "    Service already exists, skipping."
+  SERVICE_ARN="$EXISTING_SERVICE"
+else
+  SERVICE_JSON=$(aws apprunner create-service \
+    --service-name "$APPRUNNER_SERVICE_NAME" \
+    --source-configuration "{
+      \"ImageRepository\": {
+        \"ImageIdentifier\": \"${ECR_URI}:latest\",
+        \"ImageRepositoryType\": \"ECR\",
+        \"ImageConfiguration\": {\"Port\": \"8000\"}
+      },
+      \"AuthenticationConfiguration\": {
+        \"AccessRoleArn\": \"${APPRUNNER_ECR_ROLE_ARN}\"
+      },
+      \"AutoDeploymentsEnabled\": false
+    }" \
+    --instance-configuration "{\"Cpu\": \"0.25 vCPU\", \"Memory\": \"0.5 GB\"}" \
     --region "$AWS_REGION" \
-    --query "ServiceSummaryList[?ServiceName=='${APPRUNNER_SERVICE_NAME}'].ServiceArn" \
-    --output text)
+    --output json)
+
+  SERVICE_ARN=$(echo "$SERVICE_JSON" | jq -r '.Service.ServiceArn')
 fi
 
 echo ""

@@ -9,7 +9,7 @@ Personal site and blog. Built with FastAPI, Jinja2 templates, and markdown files
 - **Content:** Markdown with YAML frontmatter
 - **Email:** fastapi-mail via SendGrid SMTP
 - **Containers:** Docker + Docker Compose
-- **Deployment:** Azure Container Apps
+- **Deployment:** Azure Container Apps + AWS App Runner
 
 ## Running locally
 
@@ -60,6 +60,35 @@ image: "/static/assets/images/filename.jpg"
 
 Both pipelines trigger on push to `main` and use OIDC (no long-lived secrets stored in GitHub).
 
+### Prerequisites
+
+You only need these to run the one-time bootstrap scripts. Not needed for day-to-day dev.
+
+**Azure bootstrap** — install Azure CLI and jq:
+```bash
+brew install azure-cli jq
+az login
+az account set --subscription <your-subscription-name-or-id>
+```
+
+**AWS bootstrap** — install AWS CLI, jq, and Docker (used to push a placeholder image to ECR):
+```bash
+brew install awscli jq
+aws configure   # enter your Access Key ID, Secret, region
+```
+
+The IAM user running the bootstrap needs these permissions (one inline policy covers all of it — see the policy in the deployment section below):
+- `ecr:*`
+- `apprunner:*`
+- `iam:CreateRole`, `iam:AttachRolePolicy`, `iam:GetRole`, `iam:PassRole`
+- `iam:CreateOpenIDConnectProvider`, `iam:ListOpenIDConnectProviders`
+
+Verify both work:
+```bash
+az account show
+aws sts get-caller-identity
+```
+
 ### Azure Container Apps
 
 **One-time setup:**
@@ -68,15 +97,20 @@ Both pipelines trigger on push to `main` and use OIDC (no long-lived secrets sto
 ./infra/bootstrap-azure.sh
 ```
 
-The script creates the resource group, ACR, Container Apps environment, a service principal with OIDC federated credentials, and prints the exact secrets/variables to paste into GitHub.
+The script creates the resource group, ACR, Container Apps environment, a service principal with OIDC federated credentials, and prints the exact values to paste into GitHub.
 
 **Pipeline:** `az acr build` → push to ACR → update Container Apps revision.
 
-| GitHub Secrets | GitHub Variables |
+**Where to paste the output:** GitHub repo → Settings → Secrets and variables → Actions
+
+| Type | Name |
 |---|---|
-| `AZURE_CLIENT_ID` | `ACR_NAME` |
-| `AZURE_TENANT_ID` | `AZURE_RESOURCE_GROUP` |
-| `AZURE_SUBSCRIPTION_ID` | `CONTAINER_APP_NAME` |
+| Secret | `AZURE_CLIENT_ID` |
+| Secret | `AZURE_TENANT_ID` |
+| Secret | `AZURE_SUBSCRIPTION_ID` |
+| Variable | `ACR_NAME` |
+| Variable | `AZURE_RESOURCE_GROUP` |
+| Variable | `CONTAINER_APP_NAME` |
 
 ### AWS App Runner
 
@@ -86,15 +120,52 @@ The script creates the resource group, ACR, Container Apps environment, a servic
 ./infra/bootstrap-aws.sh
 ```
 
-The script creates the ECR repo, OIDC provider, two IAM roles (one for GitHub Actions, one for App Runner → ECR), and the App Runner service, then prints the exact secrets/variables to paste into GitHub.
+The script creates the ECR repo, OIDC provider, two IAM roles (one for GitHub Actions, one for App Runner → ECR), pushes a placeholder image, and creates the App Runner service. It prints the exact values to paste into GitHub.
 
 **Pipeline:** build image locally → push to ECR → `apprunner update-service` → wait for rollout.
 
-| GitHub Secrets | GitHub Variables |
+**Where to paste the output:** GitHub repo → Settings → Secrets and variables → Actions
+
+| Type | Name | 
 |---|---|
-| `AWS_ROLE_ARN` | `AWS_REGION` |
-| | `ECR_REPOSITORY` |
-| | `APPRUNNER_SERVICE_ARN` |
+| Secret | `AWS_ROLE_ARN` |
+| Variable | `AWS_REGION` |
+| Variable | `ECR_REPOSITORY` |
+| Variable | `APPRUNNER_SERVICE_ARN` |
+
+**Required IAM policy for the bootstrap user:**
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ECR",
+      "Effect": "Allow",
+      "Action": "ecr:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AppRunner",
+      "Effect": "Allow",
+      "Action": "apprunner:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "IAMBootstrap",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:AttachRolePolicy",
+        "iam:GetRole",
+        "iam:CreateOpenIDConnectProvider",
+        "iam:ListOpenIDConnectProviders",
+        "iam:PassRole"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
 
 ---
 

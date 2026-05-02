@@ -40,6 +40,7 @@ az containerapp env create \
   --name "$CONTAINER_APP_ENV" \
   --resource-group "$RESOURCE_GROUP" \
   --location "$LOCATION" \
+  --logs-destination none \
   --output none
 
 echo "==> Creating Container App (placeholder image)..."
