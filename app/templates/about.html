@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}katlauze — about{% endblock %}
+{% block meta_description %}About Kat Lauzé — software engineer, distributed systems specialist.{% endblock %}
+
+{% block content %}
+<div class="site-container">
+  <div class="about-layout">
+
+    <!-- ── Main content ─────────────────────────────────── -->
+    <div class="about-content">
+      <p class="prompt-line">about.md</p>
+      <h1 class="post-title" style="margin-bottom: var(--space-8);">{{ title }}</h1>
+
+      <div class="prose">
+        {{ content | safe }}
+      </div>
+    </div>
+
+    <!-- ── Sidebar ───────────────────────────────────────── -->
+    <aside class="about-sidebar" aria-label="Quick facts">
+      {% if image %}
+      <img class="about-portrait"
+           src="{{ image }}"
+           alt="Kat Lauzé" />
+      {% endif %}
+
+      <div class="about-meta">
+        <div class="about-meta-row">
+          <span class="about-meta-key">role</span>
+          <span class="about-meta-val">software engineer</span>
+        </div>
+        <div class="about-meta-row">
+          <span class="about-meta-key">exp</span>
+          <span class="about-meta-val">20+ years</span>
+        </div>
+        <div class="about-meta-row">
+          <span class="about-meta-key">stack</span>
+          <span class="about-meta-val">Databases · O11y · K8s · Python · Kotlin</span>
+        </div>
+        <div class="about-meta-row">
+          <span class="about-meta-key">likes</span>
+          <span class="about-meta-val">Star Trek · LEGO · yarn</span>
+        </div>
+        <div class="about-meta-row">
+          <span class="about-meta-key">crew</span>
+          <span class="about-meta-val">2 dogs · 1 cat</span>
+        </div>
+        <div class="about-meta-row">
+          <span class="about-meta-key">github</span>
+          <span class="about-meta-val">
+            <a href="https://github.com/katboddy" target="_blank" rel="noopener">sparrowsonline</a>
+          </span>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+{% endblock %}

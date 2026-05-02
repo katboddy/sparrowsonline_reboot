@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} — katlauze{% endblock %}
+{% block meta_description %}{{ summary }}{% endblock %}
+
+{% block content %}
+<div class="site-container">
+  <article class="post-layout">
+
+    <header class="post-header">
+      <p class="post-date">
+        <span class="text-accent">//</span> {{ date }}
+      </p>
+      <h1 class="post-title">{{ title }}</h1>
+    </header>
+
+    {% if image %}
+    <img class="post-hero-image"
+         src="{{ image }}"
+         alt="{{ title }}"
+         loading="eager" />
+    {% endif %}
+
+    <div class="prose">
+      {{ content | safe }}
+    </div>
+
+    <nav class="post-footer-nav" aria-label="Post navigation" style="
+      margin-top: var(--space-12);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    ">
+      <a href="/blog" style="
+        font-family: var(--font-mono);
+        font-size: var(--text-size-xs);
+        color: var(--text-muted);
+        letter-spacing: 0.04em;
+      ">← all posts</a>
+
+      <a href="/contact" style="
+        font-family: var(--font-mono);
+        font-size: var(--text-size-xs);
+        color: var(--accent);
+        letter-spacing: 0.04em;
+      ">say hello →</a>
+    </nav>
+
+  </article>
+</div>
+{% endblock %}

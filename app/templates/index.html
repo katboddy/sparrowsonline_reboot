@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}katlauze — home{% endblock %}
+
+{% block content %}
+<div class="site-container">
+
+  <!-- ── Hero ──────────────────────────────────────────── -->
+  <section class="hero" aria-label="Introduction">
+    <p class="hero-label">katlauze.dev</p>
+    <h1 class="hero-title">
+      Kat Lauzé<span class="accent">.</span><span class="cursor" aria-hidden="true"></span>
+    </h1>
+    <p class="hero-sub">
+      Software engineer &amp; tech lead. I build distributed systems, data pipelines,
+      and readable code. 20+ years in. Still learning.
+    </p>
+    <div class="hero-tags" aria-label="Specialisms">
+      <span class="tag">databases</span>
+      <span class="tag">observability</span>
+      <span class="tag">kubernetes</span>
+      <span class="tag">python</span>
+      <span class="tag">kotlin</span>
+      <span class="tag">data pipelines</span>
+
+    </div>
+  </section>
+
+  <!-- ── Featured post ─────────────────────────────────── -->
+  {% if featured %}
+  <section class="section" aria-label="Latest post">
+    <div class="section-header">
+      <h2 class="section-title">latest</h2>
+    </div>
+    <div class="post-grid">
+      <article class="post-card post-card--featured">
+        {% if featured.image %}
+        <img class="post-card-image"
+             src="{{ featured.image }}"
+             alt="{{ featured.title }}"
+             loading="eager" />
+        {% endif %}
+        <div class="post-card-body">
+          <p class="post-card-meta">{{ featured.date }}</p>
+          <h3 class="post-card-title">{{ featured.title }}</h3>
+          <p class="post-card-summary">{{ featured.summary }}</p>
+          <a href="/post/{{ featured.slug }}" class="post-card-link">read post</a>
+        </div>
+      </article>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- ── Post grid ─────────────────────────────────────── -->
+  {% if posts %}
+  <section class="section" aria-label="All posts">
+    <div class="section-header">
+      <h2 class="section-title">writing</h2>
+    </div>
+    <div class="post-grid">
+      {% for post in posts %}
+      <article class="post-card">
+        {% if post.image %}
+        <img class="post-card-image"
+             src="{{ post.image }}"
+             alt="{{ post.title }}"
+             loading="lazy" />
+        {% endif %}
+        <div class="post-card-body">
+          <p class="post-card-meta">{{ post.date }}</p>
+          <h3 class="post-card-title">{{ post.title }}</h3>
+          <p class="post-card-summary">{{ post.summary }}</p>
+          <a href="/post/{{ post.slug }}" class="post-card-link">read post</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+</div>
+{% endblock %}

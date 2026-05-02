@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}katlauze — blog{% endblock %}
+{% block meta_description %}Writing on distributed systems, data pipelines, AI/ML, and software engineering.{% endblock %}
+
+{% block content %}
+<div class="site-container">
+
+  <section class="section">
+    <div class="section-header">
+      <h1 class="section-title">writing</h1>
+      <p class="section-subtitle">distributed systems · data · ai · craft</p>
+    </div>
+
+    <div class="post-grid">
+      {% if featured %}
+      <article class="post-card post-card--featured">
+        {% if featured.image %}
+        <img class="post-card-image"
+             src="{{ featured.image }}"
+             alt="{{ featured.title }}"
+             loading="eager" />
+        {% endif %}
+        <div class="post-card-body">
+          <p class="post-card-meta">{{ featured.date }}</p>
+          <h2 class="post-card-title">{{ featured.title }}</h2>
+          <p class="post-card-summary">{{ featured.summary }}</p>
+          <a href="/post/{{ featured.slug }}" class="post-card-link">read post</a>
+        </div>
+      </article>
+      {% endif %}
+
+      {% for post in posts %}
+      <article class="post-card">
+        {% if post.image %}
+        <img class="post-card-image"
+             src="{{ post.image }}"
+             alt="{{ post.title }}"
+             loading="lazy" />
+        {% endif %}
+        <div class="post-card-body">
+          <p class="post-card-meta">{{ post.date }}</p>
+          <h2 class="post-card-title">{{ post.title }}</h2>
+          <p class="post-card-summary">{{ post.summary }}</p>
+          <a href="/post/{{ post.slug }}" class="post-card-link">read post</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+  </section>
+</div>
+{% endblock %}

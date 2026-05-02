@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}404 — katlauze{% endblock %}
+
+{% block content %}
+<div class="site-container">
+  <div style="padding: var(--space-24) 0; text-align: center;">
+    <p class="prompt-line" style="justify-content: center;">404</p>
+    <h1 class="hero-title" style="margin-bottom: var(--space-4);">
+      Not found<span class="accent">.</span>
+    </h1>
+    <p style="color: var(--text-secondary); margin-bottom: var(--space-8);">
+      This page does not exist or was moved.
+    </p>
+    <a href="/" style="
+      font-family: var(--font-mono);
+      font-size: var(--text-size-sm);
+      color: var(--accent);
+      letter-spacing: 0.04em;
+    ">← go home</a>
+  </div>
+</div>
+{% endblock %}

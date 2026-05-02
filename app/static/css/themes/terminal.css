@@ -1,0 +1,79 @@
+/*
+ * THEME: terminal
+ *
+ * To switch themes, change the <link> in base.html from:
+ *   /static/css/themes/terminal.css
+ * to any other file in this folder.
+ * main.css never uses hardcoded colours — only var(--xxx).
+ */
+
+:root {
+  /* ── Backgrounds ─────────────────────────────────────── */
+  --bg-page:        #0b0f0c;
+  --bg-surface:     #131a15;
+  --bg-surface-alt: #1a2320;
+  --bg-overlay:     rgba(11, 15, 12, 0.96);
+
+  /* ── Text ────────────────────────────────────────────── */
+  --text-primary:   #d6f5de;
+  --text-secondary: #7aaa88;
+  --text-muted:     #445c4c;
+  --text-on-accent: #061009;
+
+  /* ── Accent (terminal green) ─────────────────────────── */
+  --accent:         #3ddc6e;
+  --accent-dim:     #1f6b3a;
+  --accent-subtle:  rgba(61, 220, 110, 0.08);
+  --accent-hover:   #6feba0;
+
+  /* ── Links ───────────────────────────────────────────── */
+  --link:           #3ddc6e;
+  --link-hover:     #6feba0;
+
+  /* ── Borders ─────────────────────────────────────────── */
+  --border:         rgba(61, 220, 110, 0.12);
+  --border-strong:  rgba(61, 220, 110, 0.28);
+
+  /* ── Code blocks ─────────────────────────────────────── */
+  --code-bg:        #070d09;
+  --code-text:      #3ddc6e;
+  --code-border:    rgba(61, 220, 110, 0.2);
+
+  /* ── Typography ──────────────────────────────────────── */
+  --font-sans:  'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:  'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  --text-size-xs:   0.75rem;
+  --text-size-sm:   0.875rem;
+  --text-size-base: 1rem;
+  --text-size-lg:   1.125rem;
+  --text-size-xl:   1.25rem;
+  --text-size-2xl:  1.5rem;
+  --text-size-3xl:  2rem;
+  --text-size-4xl:  2.75rem;
+
+  /* ── Spacing ─────────────────────────────────────────── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* ── Layout ──────────────────────────────────────────── */
+  --radius-sm:  3px;
+  --radius-md:  6px;
+  --radius-lg:  10px;
+  --max-width:  900px;
+  --nav-height: 60px;
+
+  /* ── Terminal decorations ────────────────────────────── */
+  --prompt:       '$ ';
+  --cursor-color: #3ddc6e;
+
+  /* ── Transitions ─────────────────────────────────────── */
+  --transition: 150ms ease;
+}

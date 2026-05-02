@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}katlauze — contact{% endblock %}
+{% block meta_description %}Get in touch with Kat Lauzé.{% endblock %}
+
+{% block content %}
+<div class="site-container">
+  <div class="contact-layout">
+
+    <p class="prompt-line">contact.form</p>
+    <h1 class="post-title" style="margin-bottom: var(--space-2);">Say hello.</h1>
+    <p style="color: var(--text-secondary); margin-bottom: var(--space-8); font-size: var(--text-size-sm);">
+      I read everything. Response time varies but I do reply.
+    </p>
+
+    {% if success %}
+    <div class="form-message form-message--success" role="alert">
+      // message sent, {{ name }}. talk soon.
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="form-message form-message--error" role="alert">
+      // something went wrong — {{ message }}
+    </div>
+    {% endif %}
+
+    {% if not success %}
+    <form method="POST" action="/contact" novalidate>
+
+      <div class="form-group">
+        <label class="form-label" for="name">name</label>
+        <input class="form-input"
+               type="text"
+               id="name"
+               name="name"
+               required
+               autocomplete="name"
+               placeholder="your name" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">email</label>
+        <input class="form-input"
+               type="email"
+               id="email"
+               name="email"
+               required
+               autocomplete="email"
+               placeholder="you@example.com" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="message">message</label>
+        <textarea class="form-textarea"
+                  id="message"
+                  name="message"
+                  required
+                  placeholder="what's on your mind?"></textarea>
+      </div>
+
+      <button class="form-submit" type="submit">send_message()</button>
+
+    </form>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
