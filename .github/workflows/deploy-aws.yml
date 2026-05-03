@@ -55,6 +55,3 @@ jobs:
                 \"ImageConfiguration\": {\"Port\": \"8000\"}
               }
             }"
-
-          aws apprunner wait service-updated \
-            --service-arn $APPRUNNER_SERVICE_ARN
