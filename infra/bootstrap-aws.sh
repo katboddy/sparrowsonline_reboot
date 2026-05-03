@@ -63,7 +63,7 @@ TRUST_POLICY=$(cat <<EOF
       "Condition": {
         "StringEquals": {
           "${OIDC_PROVIDER}:aud": "sts.amazonaws.com",
-          "${OIDC_PROVIDER}:sub": "repo:${GITHUB_ORG}/${GITHUB_REPO}:ref:refs/heads/main"
+          "${OIDC_PROVIDER}:sub": "repo:${GITHUB_ORG}/${GITHUB_REPO}:ref:refs/heads/master"
         }
       }
     }

@@ -104,7 +104,7 @@ az ad app federated-credential create \
   --parameters "{
     \"name\": \"github-main\",
     \"issuer\": \"https://token.actions.githubusercontent.com\",
-    \"subject\": \"repo:${GITHUB_ORG}/${GITHUB_REPO}:ref:refs/heads/main\",
+    \"subject\": \"repo:${GITHUB_ORG}/${GITHUB_REPO}:ref:refs/heads/master\",
     \"audiences\": [\"api://AzureADTokenExchange\"]
   }" \
   --output none
