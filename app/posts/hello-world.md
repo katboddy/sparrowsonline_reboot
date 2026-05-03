@@ -21,4 +21,4 @@ Where should I start?
 I want to build something. I want to write about it. So where do I start? Where does every programmer start?
 
 
-### Hello, Sparrow Robotics!
+### Hello, Internet!

@@ -114,6 +114,10 @@ The script creates the resource group, ACR, Container Apps environment, a servic
 
 ### AWS App Runner
 
+> **TODO by 2026-07-31:** AWS App Runner stopped accepting new customers on 2026-04-30. Existing services continue to work but no new features will be added. Migrate to ECS Express Mode (AWS recommended) or ECS Fargate before July end. See the migration guidance in the App Runner console.
+
+
+
 **One-time setup:**
 ```bash
 # edit the config block at the top first
